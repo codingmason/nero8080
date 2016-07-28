@@ -18,8 +18,7 @@ body {
 
 h1 {
   font-size: 4em;
-  padding: 20px;
-  margin-bottom: 50px;
+  padding: 0px 30px;
   text-shadow: 3px 3px #b14a0b;
 }
 
@@ -53,7 +52,10 @@ h1 {
 
 .text-container {
   text-align: center;
-  margin: 0px auto;
+  margin: 20px auto 80px auto;
+  border-radius: 20px;
+  background-color: #2deeff;
+  border: solid 8px #0ea3b0;
 }
 
 
