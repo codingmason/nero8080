@@ -41,9 +41,16 @@ h1 {
 .row {
   display: flex;
   margin: 0px 10%;
-  height: 80px;
   justify-content: space-around;
   border-radius: 15px;
+}
+
+.height-80 {
+  height: 80px
+}
+
+.height-200 {
+  height: 200px
 }
 
 
@@ -54,6 +61,7 @@ h1 {
 .text-container {
   text-align: center;
   margin: 0px auto;
+  
 }
 
 
