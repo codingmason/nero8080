@@ -1,0 +1,581 @@
+<script type="text/javascript" src="js/buffer-loader.js"></script>
+
+<h2>Load multiple sounds with a BufferLoader class.</h2>
+<h3>Play all the audio buffers together.</h3>
+     <input type="button" value="Play" onclick="loadAndPlay();" />
+<h3>Play all the audio buffers staggered.</h3>
+     <input type="button" value="Play" onclick="loadAndPlayStaggered();" />
+
+
+<div id="content">  
+      <h2>Create rhythmic sequences with buffered sounds.</h2>
+      <h3>Rhythm 1 (120 BPM)</h3>
+        <input type="button" value="Play Rhythm 1" onclick="startPlayingRhythm1(bufferLoader.bufferList);">
+      <h3>Rhythm 2 (80 BPM)</h3>
+        <input type="button" value="Play Rhythm 2" onclick="startPlayingRhythm2(bufferLoader.bufferList);">   
+      <p class="note"><span class="red">* </span><em>Keep in mind you need the latest version of Chrome, Safari or Firefox for this to work!</em></p>
+    </div>
+
+<h1>Second Style of loop</h1>
+    <form>
+        <button id="button-loop-1" type="button" value="1">Loop 1</button>
+        <button id="button-loop-2" type="button" value="2">Loop 2</button>
+    </form>
+<h1>Third Style of loop</h1>
+<br>
+<div contenteditable="true" class="beats-input">
+bd| bd -- -- -- -- -- -- -- | bd -- bd -- -- -- -- -- | bd -- -- -- -- -- -- -- | bd -- bd -- -- -- -- -- |
+sn| 32 -- bd bd bd bd bd -- | -- -- 42 -- sn -- -- -- | -- -- -- -- sn -- -- -- | -- -- -- -- sn -- -- -- |
+</div>
+
+<button class="drop-the-beat">DROP THE BEAT</button>
+
+
+
+
+<script type="text/javascript">
+var context;
+var bufferLoader;
+
+function loadAndPlay() {
+    try {
+        context = new AudioContext();
+    }
+    catch(e) {
+        alert("Web Audio API is not supported in this browser");
+    }
+
+    bufferLoader = new BufferLoader(
+        context,
+        [
+        "sounds/bassdrum.mp3",
+        "sounds/snare.mp3",
+        "sounds/highhat.mp3",
+        ],
+        finishedLoading
+    );
+
+    bufferLoader.load();
+}
+
+function loadAndPlayStaggered() {
+    try {
+        context = new AudioContext();
+    }
+    catch(e) {
+        alert("Web Audio API is not supported in this browser");
+    }
+
+    bufferLoader = new BufferLoader(
+        context,
+        [
+        "sounds/hh.wav",
+        "sounds/bd.wav",
+        "sounds/sn.wav",
+        ],
+        finishedLoadingStaggered
+    );
+
+    bufferLoader.load();
+}
+
+function finishedLoading(bufferList) {
+    // Create three sources and buffers
+    var kick = context.createBufferSource();
+    var snare = context.createBufferSource();
+    var hihat = context.createBufferSource();
+    kick.buffer = bufferList[0];
+    snare.buffer = bufferList[1];
+    hihat.buffer = bufferList[2];
+    
+    kick.connect(context.destination);
+    snare.connect(context.destination);
+    hihat.connect(context.destination); 
+  // Play them together
+    kick.start(0);
+    snare.start(0);
+    hihat.start(0); 
+}
+function finishedLoadingStaggered(bufferList) {
+    // Create three sources and buffers
+    var kick = context.createBufferSource();
+    var snare = context.createBufferSource();
+    var hihat = context.createBufferSource();
+    kick.buffer = bufferList[0];
+    snare.buffer = bufferList[1];
+    hihat.buffer = bufferList[2];
+    
+    kick.connect(context.destination);
+    snare.connect(context.destination);
+    hihat.connect(context.destination); 
+  // Play them staggered
+    kick.start(0);
+    snare.start(0.125);
+    hihat.start(0.25);  
+}
+
+
+
+// play loop////////////////////////////////////////////////////////////////
+
+window.onload = init;
+
+var context;
+var bufferLoader;
+
+function init() {
+    try {
+        context = new AudioContext();
+    }
+    catch(e) {
+        alert("Web Audio API is not supported in this browser");
+    }
+    
+    // Start loading the drum kit.
+    bufferLoader = new BufferLoader(
+        context,
+        [
+        "sounds/hh.wav",
+        "sounds/bd.wav",
+        "sounds/sn.wav",
+        ],
+        bufferLoadCompleted  
+    );
+
+    bufferLoader.load();
+}
+
+function playSound(buffer, time) {
+    var source = context.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    source.connect(context.destination);
+    source.start(time);
+
+}
+
+// Plays Rhythm 1
+function startPlayingRhythm1(bufferList) {
+    var kick = bufferList[0];
+    var snare = bufferList[1];
+    var hihat = bufferList[2];
+    
+    // We'll start playing the rhythm 100 milliseconds from "now"
+    var startTime = context.currentTime + 0.100;
+    
+    var tempo = 120; // BPM (beats per minute)
+    var quarterNoteTime = 60 / tempo;
+
+    // Play the kick drum on beats 1, 2, 3, 4
+    playSound(kick, startTime);
+    playSound(kick, startTime + quarterNoteTime);
+    playSound(kick, startTime + 2*quarterNoteTime);
+    playSound(kick, startTime + 3*quarterNoteTime);
+
+    // Play the snare drum on beats 2, 4
+    playSound(snare, startTime + quarterNoteTime);
+    playSound(snare, startTime + 3*quarterNoteTime);
+    
+    // Play the hi-hat every 16th note.
+    for (var i = 0; i < 16; ++i) {
+        playSound(hihat, startTime + i*0.25*quarterNoteTime);
+    }
+}
+
+// Plays Rhythm 2
+function startPlayingRhythm2(bufferList) {
+    var kick = bufferList[0];
+    var snare = bufferList[1];
+    var hihat = bufferList[2];
+    
+    // We'll start playing the rhythm 100 milliseconds from "now"
+    var startTime = context.currentTime + 0.100;
+    
+    var tempo = 80; // BPM (beats per minute)
+    var quarterNoteTime = 60 / tempo;
+
+    // Play the kick drum on beats 1, 2, 3, 4
+    playSound(kick, startTime);
+    playSound(kick, startTime + 0.5*quarterNoteTime); 
+    playSound(kick, startTime + 1.75*quarterNoteTime);
+    playSound(kick, startTime + 2*quarterNoteTime);
+    playSound(kick, startTime + 2.5*quarterNoteTime);
+  
+    // Play the snare drum on beats 2, 4
+    playSound(snare, startTime + quarterNoteTime);
+    playSound(snare, startTime + 3*quarterNoteTime);
+    playSound(snare, startTime + 3.75*quarterNoteTime); 
+    
+    // Play the hi-hat every 16th note.
+    for (var i = 0; i < 16; ++i) {
+        playSound(hihat, startTime + i*0.25*quarterNoteTime);
+    }
+    playSound(hihat, startTime + 3.125*quarterNoteTime);
+  
+}
+
+function bufferLoadCompleted() {
+  
+}
+    
+
+</script>
+
+
+ 
+    <script>
+    //--------------
+    // Audio Object
+    //--------------
+    var audio = {
+        buffer: {},
+        compatibility: {},
+        files: [
+            'sounds/bassdrum.mp3',
+            'sounds/highhat.mp3'
+        ],
+        proceed: true,
+        source_loop: {},
+        source_once: {}
+    };
+ 
+    //-----------------
+    // Audio Functions
+    //-----------------
+    audio.findSync = function(n) {
+        var first = 0,
+            current = 0,
+            offset = 0;
+ 
+        // Find the audio source with the earliest startTime to sync all others to
+        for (var i in audio.source_loop) {
+            current = audio.source_loop[i]._startTime;
+            if (current > 0) {
+                if (current < first || first === 0) {
+                    first = current;
+                }
+            }
+        }
+ 
+        if (audio.context.currentTime > first) {
+            offset = (audio.context.currentTime - first) % audio.buffer[n].duration;
+        }
+ 
+        return offset;
+    };
+ 
+    audio.play = function(n) {
+        if (audio.source_loop[n]._playing) {
+            audio.stop(n);
+        } else {
+            audio.source_loop[n] = audio.context.createBufferSource();
+            audio.source_loop[n].buffer = audio.buffer[n];
+            audio.source_loop[n].loop = true;
+            audio.source_loop[n].connect(audio.context.destination);
+ 
+            var offset = audio.findSync(n);
+            audio.source_loop[n]._startTime = audio.context.currentTime;
+ 
+            if (audio.compatibility.start === 'noteOn') {
+                /*
+                The depreciated noteOn() function does not support offsets.
+                Compensate by using noteGrainOn() with an offset to play once and then schedule a noteOn() call to loop after that.
+                */
+                audio.source_once[n] = audio.context.createBufferSource();
+                audio.source_once[n].buffer = audio.buffer[n];
+                audio.source_once[n].connect(audio.context.destination);
+                audio.source_once[n].noteGrainOn(0, offset, audio.buffer[n].duration - offset); // currentTime, offset, duration
+                /*
+                Note about the third parameter of noteGrainOn().
+                If your sound is 10 seconds long, your offset 5 and duration 5 then you'll get what you expect.
+                If your sound is 10 seconds long, your offset 5 and duration 10 then the sound will play from the start instead of the offset.
+                */
+ 
+                // Now queue up our looping sound to start immediatly after the source_once audio plays.
+                audio.source_loop[n][audio.compatibility.start](audio.context.currentTime + (audio.buffer[n].duration - offset));
+            } else {
+                audio.source_loop[n][audio.compatibility.start](0, offset);
+            }
+ 
+            audio.source_loop[n]._playing = true;
+        }
+    };
+ 
+    audio.stop = function(n) {
+        if (audio.source_loop[n]._playing) {
+            audio.source_loop[n][audio.compatibility.stop](0);
+            audio.source_loop[n]._playing = false;
+            audio.source_loop[n]._startTime = 0;
+            if (audio.compatibility.start === 'noteOn') {
+                audio.source_once[n][audio.compatibility.stop](0);
+            }
+        }
+    };
+ 
+    //-----------------------------
+    // Check Web Audio API Support
+    //-----------------------------
+    try {
+        // More info at http://caniuse.com/#feat=audio-api
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        audio.context = new window.AudioContext();
+    } catch(e) {
+        audio.proceed = false;
+        alert('Web Audio API not supported in this browser.');
+    }
+ 
+    if (audio.proceed) {
+        //---------------
+        // Compatibility
+        //---------------
+        (function() {
+            var start = 'start',
+                stop = 'stop',
+                buffer = audio.context.createBufferSource();
+ 
+            if (typeof buffer.start !== 'function') {
+                start = 'noteOn';
+            }
+            audio.compatibility.start = start;
+ 
+            if (typeof buffer.stop !== 'function') {
+                stop = 'noteOff';
+            }
+            audio.compatibility.stop = stop;
+        })();
+ 
+        //-------------------------------
+        // Setup Audio Files and Buttons
+        //-------------------------------
+        for (var a in audio.files) {
+            (function() {
+                var i = parseInt(a) + 1;
+                var req = new XMLHttpRequest();
+                req.open('GET', audio.files[i - 1], true); // array starts with 0 hence the -1
+                req.responseType = 'arraybuffer';
+                req.onload = function() {
+                    audio.context.decodeAudioData(
+                        req.response,
+                        function(buffer) {
+                            audio.buffer[i] = buffer;
+                            audio.source_loop[i] = {};
+                            var button = document.getElementById('button-loop-' + i);
+                            button.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                audio.play(this.value);
+                            });
+                        },
+                        function() {
+                            console.log('Error decoding audio "' + audio.files[i - 1] + '".');
+                        }
+                    );
+                };
+                req.send();
+            })();
+        }
+    }
+    </script>
+
+
+
+<!-- ooooosadfhjksldjfhlskadjfhklsajdfhkldsjhflaksjdhfaksljdfhlsakdjfhalfkjshfdlaksjhfsf -->
+
+
+
+<script type="text/javascript">
+      
+var context = new AudioContext();
+
+function loadBuffer(context, path , cb) {
+  var request = new XMLHttpRequest();
+  request.open('GET', path, true);
+  request.responseType = 'arraybuffer';
+
+  request.onload = function() {
+    context.decodeAudioData(request.response, function(theBuffer) {
+      cb(null, theBuffer);
+    }, function(err) {
+      cb(err);
+    });
+  }
+  request.send();
+}
+
+loadBuffer(context, 'sounds/bd.wav', function(err, baseDrum) {
+  loadBuffer(context, 'sounds/sn.wav', function(err, snare) {
+    var beats = new Beats(context, {bd: baseDrum, sn: snare});
+    console.log('got the beats woo woo', beats);
+    var button = document.querySelector('.drop-the-beat');
+    var div = document.querySelector('.beats-input');
+    function dropTheBeat(event) {
+      var text = div.textContent;
+      console.log('text is', text);
+      var track = beats.notation(text);
+      beats.startPlaying(track);
+    }
+
+    button.addEventListener('click', dropTheBeat);
+  });
+});
+
+function parseInstrument(instrumentStr) {
+  var chunks = instrumentStr.split('|');
+  var instrument = chunks[0];
+  var notes = chunks.slice(1).join(' ').trim().split(/\s+/);
+  return notes.map(function(note) {
+    // return undefined if it is a rest
+    if (note == '--') {
+      return;
+    }
+    return {note: note, instrument: instrument};
+  });
+}
+
+function removeEmpty(line) {
+  return !!line;
+}
+
+function buildTrack(notation) {
+  var instrumentStrings = notation.split('\n').filter(removeEmpty)
+  var instruments = instrumentStrings.map(parseInstrument);
+
+  return instruments[0].map(function(note, i) {
+    var notesOnBeat = []
+    instruments.forEach(function(instrument) {
+      if (instrument[i]) {
+        notesOnBeat.push(instrument[i]);
+      }
+    });
+    return notesOnBeat;
+  });
+}
+
+
+
+
+
+
+function nop() {}
+
+/**
+ * @param ctx AudioContext - used for playing notes
+ * @param instrumentBuffers Object - mappings from strings to AudioBuffers that
+*    will get played as notes.
+ * @param opts Object - options object.
+ *   bpm: beats per minute. default: 120
+ *   interval: what note each note in the track represents. default: 1/8
+ *     (so an eight-note)
+ *   beatEmitter: callback called every time a track is scheduled with the
+ *     times in seconds that each note will be played
+ */
+function Beats(ctx, instrumentBuffers, opts) {
+  this.ctx = ctx;
+  this.instrumentBuffers = instrumentBuffers;
+
+  opts = opts || {};
+  this.interval = opts.interval || 1/8;
+  this.bpm = opts.bpm || 120;
+  this.beatEmitter = opts.beatEmitter || nop;
+
+
+  // This is to kick off the ctx.currentTime counter. It appears it doesn't
+  // start counting until you create a node with it.
+  var dummyNode = ctx.createOscillator();
+}
+
+Beats.prototype.secondsPerBeat = function() {
+  return 60 / this.bpm;
+}
+
+Beats.prototype.secondsPerNote = function() {
+  // 1/8 note is actually 1/2 of a beat, so multiply by 4 to go from musical
+  // notiation to fractions of a beat
+  return this.secondsPerBeat() * this.interval * 4;
+}
+
+function scheduleNotesForTime(notes, time, ctx, instruments) {
+  notes.forEach(function(n) {
+    var node = ctx.createBufferSource();
+    node.buffer = instruments[n.instrument];
+    node.connect(ctx.destination);
+    node.start(time);
+  });
+}
+
+
+function playTrackAtTime(track, startTime, context, noteInterval, instrumentBuffers) {
+  // start playing immediately, schedule all the notes in the measure
+  var timeForI = null;
+  var beatTimes = track.map(function(note, i) {
+    timeForI = i * noteInterval;
+    scheduleNotesForTime(track[i], startTime + timeForI, context, instrumentBuffers);
+    return startTime + timeForI;
+  });
+
+  return {lastNoteTime: timeForI, beatTimes: beatTimes};
+}
+
+Beats.prototype.startPlaying = function(track, startTime) {
+  // if we are already playing, just change which track will play next and
+  // bail out
+  if (this.isPlaying) {
+    if (track) {
+      this.currentTrack = track;
+    }
+    return;
+  }
+
+  this.isPlaying = true;
+  this.currentTrack = track;
+
+  if (!startTime) {
+    startTime = this.ctx.currentTime;
+  }
+
+  // kick out the jams
+  this._loopingPlay(startTime);
+};
+
+Beats.prototype.stop = function() {
+  this.isPlaying = false;
+}
+
+Beats.prototype._shouldStop = function() {
+  return !this.isPlaying
+}
+
+/**
+ * @private
+ *
+ * schedule this.currentTrack to be played in a loop.
+ */
+Beats.prototype._loopingPlay = function(startTime) {
+  if (this._shouldStop()) {
+    return;
+  }
+  var res = playTrackAtTime(this.currentTrack, startTime, this.ctx, this.secondsPerNote(), this.instrumentBuffers);
+
+  // notify people who care about beat times
+  this.beatEmitter(res.beatTimes);
+
+  var nextBeatTime = startTime + res.lastNoteTime + this.secondsPerNote();
+  // schedule next track of notes 100 ms before current track of notes stops playing
+  var scheduleTimeout = (nextBeatTime - startTime) * 1000 - 100;
+
+  // loop to play the next track
+  setTimeout(this._loopingPlay.bind(this, nextBeatTime), scheduleTimeout);
+}
+
+/**
+ * Parse the ascii drum beat into a schedule of notes to play.
+ **/
+Beats.prototype.notation = function(notation) {
+  var track = buildTrack(notation);
+  this.currentTrack = track;
+  return track;
+}
+
+
+
+    </script>
+ 
