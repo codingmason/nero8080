@@ -7,6 +7,60 @@ light blue:  #2deeff
 dark blue:   #0ea3b0
 */
 
+
+
+body {
+  background-color: #290017;
+  font-family: Menlo;
+  color: #ef7a32;
+
+}
+
+h1 {
+  font-size: 4em;
+  padding: 0px 30px;
+  text-shadow: 3px 3px #b14a0b;
+}
+
+
+h3 {
+  color: white;
+  padding: 5px 10px;
+  white-space: nowrap;
+  text-shadow: 2px 2px #b14a0b;
+}
+
+.item {
+  width: 100%;
+  margin: 5px;
+  background: white;
+  text-align: center;
+  border-radius: 10px;
+  border: solid 4px #ef7a32;
+  box-shadow:         inset 0 0 5px #b14a0b;
+   -moz-box-shadow:    inset 0 0 5px #b14a0b;
+   -webkit-box-shadow: inset 0 0 5px #b14a0b;
+}
+
+.item:hover { position: relative; 
+              top: -4px;
+              right: 4px;}
+
+.background-blue:hover {
+  background-color: #2deeff;
+}
+
+.background-orange {
+  background-color: #ef7a32;
+}
+
+.row {
+  display: flex;
+  margin: 0px 10%;
+  justify-content: space-around;
+  border-radius: 15px;
+}
+
 .row a {
   display: flex;
   color: #ef7a32;
@@ -23,37 +77,17 @@ dark blue:   #0ea3b0
   text-shadow: 3px 3px black;
 }
 
-body {
-  background-color: #290017;
-  font-family: Menlo;
-  color: #ef7a32;
 
+
+
+.margin-left-17 {
+  margin-left: 17%;
 }
 
-h1 {
-  font-size: 4em;
-  padding: 0px 30px;
-  text-shadow: 3px 3px #b14a0b;
+.margin-right-5 {
+  margin-right: 5%;
 }
 
-.item {
-  width: 100%;
-  margin: 5px;
-  background: white;
-  text-align: center;
-  border-radius: 10px;
-  border: solid 4px #ef7a32;
-  box-shadow:         inset 0 0 5px #b14a0b;
-   -moz-box-shadow:    inset 0 0 5px #b14a0b;
-   -webkit-box-shadow: inset 0 0 5px #b14a0b;
-}
-
-.row {
-  display: flex;
-  margin: 0px 10%;
-  justify-content: space-around;
-  border-radius: 15px;
-}
 
 .height-80 {
     height: 80px;
@@ -64,8 +98,8 @@ h1 {
 }
 
 .button-text{
-  font-size: 4em;
-  padding: 0px 30px;
+  font-size: 3em;
+  padding: 30px;
   text-shadow: 3px 3px #b14a0b;
 }
 
@@ -79,6 +113,22 @@ h1 {
   border-radius: 20px;
   background-color: #2deeff;
   border: solid 8px #0ea3b0;
+}
+
+.wheel {
+  width: 100%;
+  margin: 5px;
+  background-color: #2deeff;
+  border: 15px solid #ef7a32;
+  border-radius: 45%;
+
+}
+
+.wheel-house {
+  border: 8px solid #ef7a32;
+  padding: 5px 10px;
+  border-radius: 40px;
+  margin-top: 10px;
 }
 
 
@@ -106,7 +156,11 @@ h1 {
 }
 
 
+#robot-left-arm {
+  display: flex;
+  padding-top: 50px;
 
+}
 
 
 
